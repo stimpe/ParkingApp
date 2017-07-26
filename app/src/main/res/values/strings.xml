@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Parking</string>
+    <string name="parking_lot_1_text">West Lot</string>
+    <string name="parking_lot_2_text">Parking Structure</string>
+    <string name="parking_lot_3_text">Visitor Annex</string>
+    <string name="parking_lot_value_default_text">No Info</string>
+
+</resources>
