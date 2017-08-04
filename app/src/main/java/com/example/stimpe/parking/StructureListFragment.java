@@ -1,5 +1,6 @@
 package com.example.stimpe.parking;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -92,13 +93,23 @@ public class StructureListFragment extends Fragment {
 
     private void setParkingValues(JSONArray jsonArray) {
         JSONObject jsonObject;
+        Resources res;
+        String temp;
+
+        res = getResources();
         try {
             jsonObject = jsonArray.getJSONObject(0);//Set each textview value
-            mParkingLot1Value.setText("West Lot: " + String.valueOf(jsonObject.getInt("spaces_left")));
+            temp = String.format(res.getString(R.string.parking_lot_1_text), jsonObject.getInt("spaces_left"));
+            mParkingLot1Value.setText(temp);
+            //mParkingLot1Value.setText(String.format(getResources().getResourceName(R.string.parking_lot_1_text),jsonObject.getInt("spaces_left")));
             jsonObject = jsonArray.getJSONObject(1);
-            mParkingLot2Value.setText("Parking Structure: " + String.valueOf(jsonObject.getInt("spaces_left")));
+            temp = String.format(res.getString(R.string.parking_lot_2_text), jsonObject.getInt("spaces_left"));
+            mParkingLot2Value.setText(temp);
+            //mParkingLot2Value.setText(String.format(getResources().getResourceName(R.string.parking_lot_2_text),jsonObject.getInt("spaces_left")));
             jsonObject = jsonArray.getJSONObject(2);
-            mParkingLot3Value.setText("Visitor Annex" + String.valueOf(jsonObject.getInt("spaces_left")));
+            temp = String.format(res.getString(R.string.parking_lot_3_text), jsonObject.getInt("spaces_left"));
+            mParkingLot3Value.setText(temp);
+            //mParkingLot3Value.setText(String.format(getResources().getResourceName(R.string.parking_lot_3_text),jsonObject.getInt("spaces_left")));
         }catch (Exception e) {
             e.printStackTrace();
         }
