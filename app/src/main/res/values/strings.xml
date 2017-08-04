@@ -4,5 +4,11 @@
     <string name="parking_lot_2_text">Parking Structure</string>
     <string name="parking_lot_3_text">Visitor Annex</string>
     <string name="parking_lot_value_default_text">No Info</string>
-
+    <string name="homeScreen">JPL Parking Lots</string>
+    <string name="about_screen">About</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string-array name="drawer_content">
+        <item>@string/about_screen</item>
+    </string-array>
 </resources>
