@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import java.util.Arrays;
 
+//TODO: add viewPager to connect all fragments
 public class MainActivity extends AppCompatActivity {
 
     @Override
