@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.*;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         mCurrentTitle = getTitle().toString();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerListView = (ListView) findViewById(R.id.drawerList);
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(this,R.layout.drawer_list_item, mTitles));
+        mDrawerListView.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, mTitles));
         mDrawerListView.setOnItemClickListener(new DrawerItemClickListener());
 
         FragmentManager fm = getSupportFragmentManager();
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
+        drawerSetup();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
@@ -54,6 +56,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     //protection against landscape changes etc.
