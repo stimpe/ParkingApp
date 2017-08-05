@@ -1,27 +1,39 @@
 package com.example.stimpe.parking;
 
-import android.support.v4.app.FragmentActivity;
+import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class socialMap extends FragmentActivity implements OnMapReadyCallback {
-
-    private GoogleMap mMap;
+public class socialMap extends Fragment implements OnMapReadyCallback {
+    MapView gMapView;
+    private GoogleMap mMap = null;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_social_map);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.maps, container, false);
+
+        SupportMapFragment mapFrag = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mapFrag.getMapAsync(this);
+        //gMapView = (MapView) view.findViewById(R.id.social_map_view);
+        //gMapView.getMapAsync(this);
+
+        //gMapView.onCreate(getArguments());
+        return view;
     }
 
 
@@ -42,5 +54,61 @@ public class socialMap extends FragmentActivity implements OnMapReadyCallback {
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (gMapView != null)
+            gMapView.onResume();
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (gMapView != null)
+            gMapView.onDestroy();
+    }
+    /*
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        FragmentManager fragMng = getActivity().getSupportFragmentManager();
+        Fragment frag = (fragMng.findFragmentById(R.id.map));
+        FragmentTransaction fragTrans = fragMng.beginTransaction();
+        fragTrans.remove(frag);
+        fragTrans.commit();
+    }*/
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (gMapView != null)
+            gMapView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (gMapView != null)
+            gMapView.onStop();
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (gMapView != null)
+            gMapView.onSaveInstanceState(outState);
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 }

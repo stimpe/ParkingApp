@@ -1,6 +1,7 @@
 package com.example.stimpe.parking;
 
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -113,5 +114,10 @@ public class StructureListFragment extends Fragment {
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 }
