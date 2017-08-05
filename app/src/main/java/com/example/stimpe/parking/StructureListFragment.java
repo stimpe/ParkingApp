@@ -1,9 +1,11 @@
 package com.example.stimpe.parking;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,6 +22,10 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -30,16 +37,32 @@ public class StructureListFragment extends Fragment {
     Button mParkingLot1Value;
     Button mParkingLot2Value;
     Button mParkingLot3Value;
+    final Handler handler = new Handler();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_structure_list,container,false);
         assignVariables(view);
-        getNowHTTPS();
-        //DataGetter gettheData = new DataGetter();
-        //gettheData.frag = this;
-        //gettheData.execute();
+        Timer timer = new Timer();
+        TimerTask doAsynchronousTask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    @SuppressWarnings("unchecked")
+                    public void run() {
+                        try {
+                            getNowHTTPS();
+                        }catch (Exception e) {
+                            Toast toast = Toast.makeText(getActivity(),"Failed to obtain data! Please restart app.",Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                    }
+                });
+            }
+        };
+        timer.schedule(doAsynchronousTask, 0, 60000);
+        //getNowHTTPS();
         return view;
     }
     private void assignVariables(View view) {
@@ -92,28 +115,39 @@ public class StructureListFragment extends Fragment {
         });
     }
 
-    private void setParkingValues(JSONArray jsonArray) {
+    private void setParkingValues(final JSONArray jsonArray) {
         JSONObject jsonObject;
         Resources res;
-        String temp;
+        //must be final to allow access with inner class (runOnUiThread)
+        final String[] temp = new String[jsonArray.length()];
+        Activity activity;
+
 
         res = getResources();
+        activity = getActivity();
         try {
+
             jsonObject = jsonArray.getJSONObject(0);//Set each textview value
-            temp = String.format(res.getString(R.string.parking_lot_1_text), jsonObject.getInt("spaces_left"));
-            mParkingLot1Value.setText(temp);
-            //mParkingLot1Value.setText(String.format(getResources().getResourceName(R.string.parking_lot_1_text),jsonObject.getInt("spaces_left")));
+            temp[0] = String.format(res.getString(R.string.parking_lot_1_text), jsonObject.getInt("spaces_left"));
             jsonObject = jsonArray.getJSONObject(1);
-            temp = String.format(res.getString(R.string.parking_lot_2_text), jsonObject.getInt("spaces_left"));
-            mParkingLot2Value.setText(temp);
-            //mParkingLot2Value.setText(String.format(getResources().getResourceName(R.string.parking_lot_2_text),jsonObject.getInt("spaces_left")));
+            temp[1] = String.format(res.getString(R.string.parking_lot_2_text), jsonObject.getInt("spaces_left"));
             jsonObject = jsonArray.getJSONObject(2);
-            temp = String.format(res.getString(R.string.parking_lot_3_text), jsonObject.getInt("spaces_left"));
-            mParkingLot3Value.setText(temp);
-            //mParkingLot3Value.setText(String.format(getResources().getResourceName(R.string.parking_lot_3_text),jsonObject.getInt("spaces_left")));
-        }catch (Exception e) {
+            temp[2] = String.format(res.getString(R.string.parking_lot_3_text), jsonObject.getInt("spaces_left"));
+        }catch(Exception e) {
             e.printStackTrace();
         }
+        //throws exception if not on ui thread
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+                    mParkingLot1Value.setText(temp[0]);
+                    mParkingLot2Value.setText(temp[1]);
+                    mParkingLot3Value.setText(temp[2]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public interface OnFragmentInteractionListener {

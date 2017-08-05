@@ -3,8 +3,8 @@ package com.example.stimpe.parking;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +19,23 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class socialMap extends Fragment implements OnMapReadyCallback {
     MapView gMapView;
+    private View view;
     private GoogleMap mMap = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.maps, container, false);
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null) {
+                parent.removeView(view);
+            }
+        }
+        try {
+            view = inflater.inflate(R.layout.maps, container, false);
+        }catch(InflateException e) {
+            Log.d("map", "map exists already, cannot inflate");
+        }
 
         SupportMapFragment mapFrag = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
