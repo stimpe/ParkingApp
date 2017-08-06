@@ -1,18 +1,19 @@
 package com.example.stimpe.parking;
 
+import android.app.Activity;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,8 +21,11 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -30,25 +34,41 @@ import javax.net.ssl.HttpsURLConnection;
  */
 
 public class StructureListFragment extends Fragment {
-    TextView mParkingLot1Value;
-    TextView mParkingLot2Value;
-    TextView mParkingLot3Value;
+    Button mParkingLot1Value;
+    Button mParkingLot2Value;
+    Button mParkingLot3Value;
+    final Handler handler = new Handler();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_structure_list,container,false);
         assignVariables(view);
-        testHTTPS();
-        //DataGetter gettheData = new DataGetter();
-        //gettheData.frag = this;
-        //gettheData.execute();
+        Timer timer = new Timer();
+        TimerTask doAsynchronousTask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    @SuppressWarnings("unchecked")
+                    public void run() {
+                        try {
+                            getNowHTTPS();
+                        }catch (Exception e) {
+                            Toast toast = Toast.makeText(getActivity(),"Failed to obtain data! Please restart app.",Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                    }
+                });
+            }
+        };
+        timer.schedule(doAsynchronousTask, 0, 60000);
+        //getNowHTTPS();
         return view;
     }
     private void assignVariables(View view) {
-        mParkingLot1Value = (TextView) view.findViewById(R.id.parking_lot_1_value);
-        mParkingLot2Value = (TextView) view.findViewById(R.id.parking_lot_2_value);
-        mParkingLot3Value = (TextView) view.findViewById(R.id.parking_lot_3_value);
+        mParkingLot1Value = (Button) view.findViewById(R.id.lot1);
+        mParkingLot2Value = (Button) view.findViewById(R.id.lot2);
+        mParkingLot3Value = (Button) view.findViewById(R.id.lot3);
     }
 
     //Addition by: Cristopher Hernandez
@@ -56,15 +76,13 @@ public class StructureListFragment extends Fragment {
     //Testing https connection
     //This function should get the JSON array from the JPL current parking API
     //It should then set the parking lot values to the values obtained
-    private void testHTTPS() {
+    private void getNowHTTPS() {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     InputStream responseBody;
                     BufferedReader responseBodyReader;
-                    JsonReader jsonReader;
-                    JSONObject jsonObject;
                     JSONArray jsonArray;
                     String temp;
                     StringBuilder jsonBuild = new StringBuilder();
@@ -83,12 +101,7 @@ public class StructureListFragment extends Fragment {
                         }
                         jsonString = jsonBuild.toString();
                         jsonArray = new JSONArray(jsonString);  //Create JSON array from string
-                        jsonObject = jsonArray.getJSONObject(0);//Set each textview value
-                        mParkingLot1Value.setText(String.valueOf(jsonObject.getInt("spaces_left")));
-                        jsonObject = jsonArray.getJSONObject(1);
-                        mParkingLot2Value.setText(String.valueOf(jsonObject.getInt("spaces_left")));
-                        jsonObject = jsonArray.getJSONObject(2);
-                        mParkingLot3Value.setText(String.valueOf(jsonObject.getInt("spaces_left")));
+                        setParkingValues(jsonArray);
                         test_connect.disconnect();
                     } else {
                         Log.d("Test", String.valueOf(test_connect.getResponseCode()));
@@ -100,5 +113,45 @@ public class StructureListFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void setParkingValues(final JSONArray jsonArray) {
+        JSONObject jsonObject;
+        Resources res;
+        //must be final to allow access with inner class (runOnUiThread)
+        final String[] temp = new String[jsonArray.length()];
+        Activity activity;
+
+
+        res = getResources();
+        activity = getActivity();
+        try {
+
+            jsonObject = jsonArray.getJSONObject(0);//Set each textview value
+            temp[0] = String.format(res.getString(R.string.parking_lot_1_text), jsonObject.getInt("spaces_left"));
+            jsonObject = jsonArray.getJSONObject(1);
+            temp[1] = String.format(res.getString(R.string.parking_lot_2_text), jsonObject.getInt("spaces_left"));
+            jsonObject = jsonArray.getJSONObject(2);
+            temp[2] = String.format(res.getString(R.string.parking_lot_3_text), jsonObject.getInt("spaces_left"));
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        //throws exception if not on ui thread
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+                    mParkingLot1Value.setText(temp[0]);
+                    mParkingLot2Value.setText(temp[1]);
+                    mParkingLot3Value.setText(temp[2]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 }

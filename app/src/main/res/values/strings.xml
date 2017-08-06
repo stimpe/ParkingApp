@@ -1,8 +1,19 @@
 <resources>
     <string name="app_name">Parking</string>
-    <string name="parking_lot_1_text">West Lot</string>
-    <string name="parking_lot_2_text">Parking Structure</string>
-    <string name="parking_lot_3_text">Visitor Annex</string>
+    <string name="parking_lot_1_text">West Lot \n %d</string>
+    <string name="parking_lot_2_text">Parking Structure \n %d</string>
+    <string name="parking_lot_3_text">Visitor Annex \n %d</string>
     <string name="parking_lot_value_default_text">No Info</string>
-
+    <string name="homeScreen">Spots Available</string>
+    <string name="about_screen">About</string>
+    <string name="title_activity_social_map">Map</string>
+    <string name="prediction_title">Predictions</string>
+    <string-array name="lot_spinnerArray">
+        <item>West Lot</item>
+        <item>Parking Structure</item>
+        <item>Visitor Annex</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
