@@ -38,14 +38,16 @@ public class StructureListFragment extends Fragment {
     Button mParkingLot2Value;
     Button mParkingLot3Value;
     final Handler handler = new Handler();
+    Timer timer;
+    TimerTask doAsynchronousTask;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_structure_list,container,false);
         assignVariables(view);
-        Timer timer = new Timer();
-        TimerTask doAsynchronousTask = new TimerTask() {
+        /*timer = new Timer();
+        doAsynchronousTask = new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
@@ -61,7 +63,7 @@ public class StructureListFragment extends Fragment {
                 });
             }
         };
-        timer.schedule(doAsynchronousTask, 0, 60000);
+        timer.schedule(doAsynchronousTask, 0, 60000);*/
         //getNowHTTPS();
         return view;
     }
@@ -93,7 +95,7 @@ public class StructureListFragment extends Fragment {
                     test_connect.setRequestProperty("Accept", "application/json");  //ensure only JSON is accepted
                     test_connect.setRequestMethod("GET");
                     if (test_connect.getResponseCode() == 200) {
-                        Log.d("Test", "Success");   //check android monitor logcat for debug log statement
+                        Log.d("now_data", "Success");   //check android monitor logcat for debug log statement
                         responseBody = test_connect.getInputStream();
                         responseBodyReader = new BufferedReader(new InputStreamReader(responseBody, "UTF-8"));
                         while ((temp = responseBodyReader.readLine()) != null) {
@@ -104,7 +106,7 @@ public class StructureListFragment extends Fragment {
                         setParkingValues(jsonArray);
                         test_connect.disconnect();
                     } else {
-                        Log.d("Test", String.valueOf(test_connect.getResponseCode()));
+                        Log.d("now_data", String.valueOf(test_connect.getResponseCode()));
                         test_connect.disconnect();
                     }
                 } catch (Exception e) {
@@ -149,6 +151,40 @@ public class StructureListFragment extends Fragment {
             }
         });
     }
+
+    //onPause eliminate timerTask to prevent running in background
+    @Override
+    public void onPause() {
+        timer.cancel();
+        timer.purge();
+        super.onPause();
+    }
+
+    //onResume create timerTask
+    //onResume runs both on initial start and when app brought to foreground
+    @Override
+    public void onResume() {
+        timer = new Timer();
+        doAsynchronousTask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    @SuppressWarnings("unchecked")
+                    public void run() {
+                        try {
+                            getNowHTTPS();
+                        }catch (Exception e) {
+                            Toast toast = Toast.makeText(getActivity(),"Failed to obtain data! Please restart app.",Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                    }
+                });
+            }
+        };
+        timer.schedule(doAsynchronousTask, 0, 60000);
+        super.onResume();
+    }
+
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
