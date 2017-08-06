@@ -12,6 +12,6 @@ The app's primary mode of navigation is a viewPager (swipe navigation) with the 
  
 This app uses MPAndroidChart by Philipp Jahoda
 
-MPAndroidChart, Copyright 2016 Philipp Jahoda
+MPAndroidChart, Copyright 2016 Philipp Jahoda,
 is licensed under Apache License, Version 2.0
 the license can be viewed in LICENSE or at http://www.apache.org/licenses/LICENSE-2.0
