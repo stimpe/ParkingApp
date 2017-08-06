@@ -4,6 +4,7 @@ JPL Parking App
 Entry for JPL Parking App competition.
 
 The app structure is:
+
   Homepage with basic view of parking info.
   Prediction page with dynamic chart of predictive parking data.
   Experimental map page for potential use with social media parking "marking" feature.
