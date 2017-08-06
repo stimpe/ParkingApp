@@ -287,12 +287,23 @@ public class predictionPage extends Fragment {
 
         try {
             //json begins at hour 6, ends at hour 17
+            //get relevant data here
+            //filtering out values not from chosen day
+            //if day is friday, get non rdo friday values
             for (int i = begin_hr; i <= end_hr; i++) {
                 for (int j = 0; j < lenJsonArray; j++) {
                     jsonObject = jsonArray.getJSONObject(j);
-                    if (jsonObject.getInt("hour") == i && jsonObject.getInt("day_of_week") == day_id) {
-                        dataPoints.append(i, (int) jsonObject.getDouble("total"));
-                        break;
+                    if (day_id != 6) {
+                        if (jsonObject.getInt("hour") == i && jsonObject.getInt("day_of_week") == day_id) {
+                            dataPoints.append(i, (int) jsonObject.getDouble("total"));
+                            break;
+                        }
+                    }else {
+                        if (jsonObject.getInt("hour") == i && jsonObject.getInt("day_of_week") == day_id
+                                && !jsonObject.getBoolean("rdo_friday")) {
+                            dataPoints.append(i, (int) jsonObject.getDouble("total"));
+                            break;
+                        }
                     }
                 }
             }

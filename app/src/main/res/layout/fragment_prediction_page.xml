@@ -9,6 +9,20 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+    <Button
+        android:id="@+id/help_button2"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/round_help_button"
+        android:text="\?"
+        app:layout_constraintLeft_toRightOf="@+id/predict_title"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.351"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp" />
+
     <RadioGroup
         android:id="@+id/days_of_week"
         android:layout_width="wrap_content"
@@ -28,7 +42,7 @@
             android:layout_width="37dp"
             android:layout_height="37dp"
             android:button="@null"
-            android:text="Mon"
+            android:text="@string/monday"
             android:textColor="@color/days_radio"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -42,7 +56,7 @@
             android:layout_width="37dp"
             android:layout_height="37dp"
             android:button="@null"
-            android:text="Tues"
+            android:text="@string/tuesday"
             android:textColor="@color/days_radio"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -56,7 +70,7 @@
             android:layout_width="37dp"
             android:layout_height="37dp"
             android:button="@null"
-            android:text="Wed"
+            android:text="@string/wednesday"
             android:textColor="@color/days_radio"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -70,7 +84,7 @@
             android:layout_width="37dp"
             android:layout_height="37dp"
             android:button="@null"
-            android:text="Thurs"
+            android:text="@string/thursday"
             android:textColor="@color/days_radio"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -84,7 +98,7 @@
             android:layout_width="37dp"
             android:layout_height="37dp"
             android:button="@null"
-            android:text="Fri"
+            android:text="@string/friday"
             android:textColor="@color/days_radio"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -116,7 +130,7 @@
 
     <TextView
         android:id="@+id/predict_title"
-        android:layout_width="368dp"
+        android:layout_width="154dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/prediction_title"
@@ -124,8 +138,8 @@
         android:textColor="@android:color/darker_gray"
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="115dp" />
 
 
 </android.support.constraint.ConstraintLayout>
