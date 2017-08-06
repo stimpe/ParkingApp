@@ -7,6 +7,7 @@
     <string name="homeScreen">Spots Available</string>
     <string name="about_screen">About</string>
     <string name="title_activity_social_map">Map</string>
+    <string name="prediction_title">Predictions</string>
     <string-array name="lot_spinnerArray">
         <item>West Lot</item>
         <item>Parking Structure</item>

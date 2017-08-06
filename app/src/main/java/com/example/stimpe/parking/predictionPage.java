@@ -43,6 +43,9 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 
 
+//MPAndroidChart used for chart
+//documentation here: https://github.com/PhilJay/MPAndroidChart/wiki
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -74,6 +77,8 @@ public class predictionPage extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
+     * this is a generated method
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
@@ -110,7 +115,7 @@ public class predictionPage extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
+            //selected listeners to update graph on page
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
@@ -125,7 +130,7 @@ public class predictionPage extends Fragment {
             }
         });
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
+            //checked listeners to update graph
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 String text = spinner.getSelectedItem().toString();
@@ -195,6 +200,7 @@ public class predictionPage extends Fragment {
     }
 
     //variables must be final to be accessed in inner class
+    //this function makes https call and gets json predict data based on given lot & day
     private void getPredictHTTPS(final int lot, final String day) {
         AsyncTask.execute(new Runnable() {
             @Override
@@ -254,6 +260,8 @@ public class predictionPage extends Fragment {
         });
     }
 
+    //this function takes the data and forms it for use with the charts
+    //also handles the case where the chart must be updated
     public void predictDataHandler(JSONArray jsonArray, int day_id) {
         Log.d("predictChart", "begin chart draw");
         final SparseIntArray dataPoints = new SparseIntArray();
@@ -333,12 +341,14 @@ public class predictionPage extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
+    //generated method
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
 
+    //generated method
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -350,6 +360,7 @@ public class predictionPage extends Fragment {
         }
     }
 
+    //generated method
     @Override
     public void onDetach() {
         super.onDetach();
@@ -366,6 +377,7 @@ public class predictionPage extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+    //generated method
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

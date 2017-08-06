@@ -3,6 +3,7 @@ package com.example.stimpe.parking;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +20,6 @@ import android.widget.ListView;
 
 import java.util.Arrays;
 
-//TODO: add viewPager to connect all fragments
 public class MainActivity extends AppCompatActivity implements predictionPage.OnFragmentInteractionListener, socialMap.OnFragmentInteractionListener, StructureListFragment.OnFragmentInteractionListener{
     public static final int PAGE_COUNT = 3;
     ViewPager viewPager;
@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements predictionPage.On
 
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(new customPagerAdapter(getSupportFragmentManager()));
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager, true);
         /*
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements predictionPage.On
         }*/
     }
 
+    //custom adapter for the viewpager to use
     private class customPagerAdapter extends FragmentPagerAdapter {
 
         public customPagerAdapter(FragmentManager fm) {
