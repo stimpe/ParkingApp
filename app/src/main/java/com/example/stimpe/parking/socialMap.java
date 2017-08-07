@@ -15,6 +15,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class socialMap extends Fragment implements OnMapReadyCallback {
@@ -61,10 +62,26 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        // Create Map starting point and boundaries
+        LatLng jpl_map_start = new LatLng(34.20021, -118.174);
+        LatLng jpl_northeast_bound = new LatLng(34.205,-118.167);
+        LatLng jpl_southwest_bound = new LatLng(34.199,-118.178);
+        LatLngBounds jpl_bounds = new LatLngBounds(jpl_southwest_bound, jpl_northeast_bound);
+
+        //set pins for 3 lots
+        LatLng west_lot = new LatLng(34.20021,-118.17737);
+        LatLng parking_structure = new LatLng(34.19947,-118.16972);
+        LatLng visitor_annex = new LatLng(34.19950,-118.17784);
+        mMap.addMarker(new MarkerOptions().position(west_lot).title("West Lot"));
+        mMap.addMarker(new MarkerOptions().position(parking_structure).title("Parking Structure"));
+        mMap.addMarker(new MarkerOptions().position(visitor_annex).title("Visitor Annex"));
+
+        //zoom to jpl map
+        mMap.setMinZoomPreference(15);
+        mMap.setMaxZoomPreference(18);
+        mMap.setLatLngBoundsForCameraTarget(jpl_bounds);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(jpl_map_start));
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(16));
     }
     @Override
     public void onResume() {
