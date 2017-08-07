@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">Parking</string>
+    <string name="app_name">JPL Park</string>
     <string name="parking_lot_1_text">West Lot \n %d</string>
     <string name="parking_lot_2_text">Parking Structure \n %d</string>
     <string name="parking_lot_3_text">Visitor Annex \n %d</string>
     <string name="parking_lot_value_default_text">No Info</string>
+    <string name="help_confirm">OK</string>
     <string name="monday">Mon</string>
     <string name="tuesday">Tues</string>
     <string name="wednesday">Wed</string>
