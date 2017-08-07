@@ -11,6 +11,8 @@ The app structure is:
   
 The app's primary mode of navigation is a viewPager (swipe navigation) with the back button implemented.
  
+LIBRARY ATTRIBUTION
+
 This app uses MPAndroidChart by Philipp Jahoda
 
 MPAndroidChart Copyright 2016 Philipp Jahoda
