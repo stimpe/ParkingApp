@@ -2,18 +2,26 @@ package com.example.stimpe.parking;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -55,20 +63,26 @@ import javax.net.ssl.HttpsURLConnection;
  * create an instance of this fragment.
  */
 public class predictionPage extends Fragment {
-    Spinner spinner;
+    private Spinner spinner;
     // TODO: Rename parameter arguments if neccessary
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private RadioGroup radioGroup;
     private RadioButton radioButton;
-    BarChart chart;
+    private BarChart chart;
+    private CheckBox checkBox;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    PopupWindow mPopUpWindow;
+    Button button;
+    Context context;
+    LinearLayout mLinearLayout;
 
     public predictionPage() {
         // Required empty public constructor
@@ -133,16 +147,81 @@ public class predictionPage extends Fragment {
             //checked listeners to update graph
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton checked = (RadioButton) radioGroup.findViewById(checkedId);
+                if (checked.getText().equals("Fri")) {
+                    checkBox.setVisibility(View.VISIBLE);
+                }else {
+                    checkBox.setVisibility(View.INVISIBLE);
+                }
                 String text = spinner.getSelectedItem().toString();
                 selectionListener(group, checkedId, text);
             }
 
         });
         chart = (BarChart) view.findViewById(R.id.predictChart);
-        Legend legend = chart.getLegend();
-        legend.setEnabled(false);
+        chart.getLegend().setEnabled(false);
+        chart.getAxisLeft().setDrawGridLines(false);
+        chart.getXAxis().setDrawGridLines(false);
+        chart.getDescription().setEnabled(false);
         spinner.setSelection(0);
+        checkBox = (CheckBox) view.findViewById(R.id.rdoFriday);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                selectionListener();
+            }
+        });
+        checkBox.setVisibility(View.INVISIBLE);
+        context = getActivity();
+        mLinearLayout = (LinearLayout) view.findViewById(R.id.predict_wrapper);
+        button = (Button) view.findViewById(R.id.help_button2);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(R.layout.help_predict_page,null);
+                mPopUpWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                Button cButton = (Button) popupView.findViewById(R.id.confirm2);
+                cButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPopUpWindow.dismiss();
+                    }
+                });
+                mPopUpWindow.setBackgroundDrawable(new ColorDrawable());
+                mPopUpWindow.setOutsideTouchable(true);
+                mPopUpWindow.setAnimationStyle(R.style.popup_animation);
+                mPopUpWindow.showAtLocation(mLinearLayout, Gravity.CENTER,0,0);
+            }
+        });
         return view;
+    }
+
+    public void selectionListener() {
+        Log.d("check", "RDO checked");
+        int lotId;
+        int checkId = radioGroup.getCheckedRadioButtonId();
+        String spinnerText = spinner.getSelectedItem().toString();
+        radioButton = (RadioButton) radioGroup.findViewById(checkId);
+        Log.d("check", spinnerText);
+        switch(spinnerText){    //get lot ids for use with API call
+            case "West Lot":
+                lotId = 1;
+                break;
+            case "Parking Structure":
+                lotId = 2;
+                break;
+            case "Visitor Annex":
+                lotId = 3;
+                break;
+            default:
+                lotId = 1;
+        }
+        if (radioButton != null) {
+            getPredictHTTPS(lotId, radioButton.getText().toString());
+        } else {
+            getPredictHTTPS(1,"Mon");
+        }
     }
 
     public void selectionListener(RadioGroup group, int checkedId, String spinnerText) {
@@ -274,6 +353,13 @@ public class predictionPage extends Fragment {
         final BarDataSet barDataSet;
         XAxis xAxis;
         Activity activity = getActivity();
+        boolean rdoFriday;
+
+        if (checkBox.isChecked()) {
+            rdoFriday = true;
+        }else {
+            rdoFriday = false;
+        }
 
         for (int i=begin_hr; i <= end_hr; i++) {
             if (i > 12) {
@@ -300,7 +386,7 @@ public class predictionPage extends Fragment {
                         }
                     }else {
                         if (jsonObject.getInt("hour") == i && jsonObject.getInt("day_of_week") == day_id
-                                && !jsonObject.getBoolean("rdo_friday")) {
+                                && jsonObject.getBoolean("rdo_friday") == rdoFriday) {
                             dataPoints.append(i, (int) jsonObject.getDouble("total"));
                             break;
                         }

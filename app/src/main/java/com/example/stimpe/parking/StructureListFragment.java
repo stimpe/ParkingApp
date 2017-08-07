@@ -1,7 +1,9 @@
 package com.example.stimpe.parking;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,10 +11,13 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -34,37 +39,46 @@ import javax.net.ssl.HttpsURLConnection;
  */
 
 public class StructureListFragment extends Fragment {
-    Button mParkingLot1Value;
-    Button mParkingLot2Value;
-    Button mParkingLot3Value;
-    final Handler handler = new Handler();
-    Timer timer;
-    TimerTask doAsynchronousTask;
+    private Button mParkingLot1Value;
+    private Button mParkingLot2Value;
+    private Button mParkingLot3Value;
+    private final Handler handler = new Handler();
+    private Timer timer;
+    private TimerTask doAsynchronousTask;
+    private PopupWindow mPopUpWindow;
+    private Button button;
+    private Context context;
+    private LinearLayout mLinearLayout;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_structure_list,container,false);
         assignVariables(view);
-        /*timer = new Timer();
-        doAsynchronousTask = new TimerTask() {
+        context = getActivity();
+        mLinearLayout = (LinearLayout) view.findViewById(R.id.list_wrapper_layout);
+        button = (Button) view.findViewById(R.id.help_button);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    @SuppressWarnings("unchecked")
-                    public void run() {
-                        try {
-                            getNowHTTPS();
-                        }catch (Exception e) {
-                            Toast toast = Toast.makeText(getActivity(),"Failed to obtain data! Please restart app.",Toast.LENGTH_LONG);
-                            toast.show();
-                        }
+            public void onClick(View view) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(R.layout.help_list_page,null);
+                mPopUpWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                Button cButton = (Button) popupView.findViewById(R.id.confirm);
+                cButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mPopUpWindow.dismiss();
                     }
                 });
+                mPopUpWindow.setBackgroundDrawable(new ColorDrawable());
+                mPopUpWindow.setOutsideTouchable(true);
+                mPopUpWindow.setAnimationStyle(R.style.popup_animation);
+                mPopUpWindow.showAtLocation(mLinearLayout, Gravity.CENTER,0,0);
             }
-        };
-        timer.schedule(doAsynchronousTask, 0, 60000);*/
-        //getNowHTTPS();
+        });
+
+
         return view;
     }
     private void assignVariables(View view) {
