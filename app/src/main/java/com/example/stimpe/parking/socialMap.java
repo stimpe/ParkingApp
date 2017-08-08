@@ -1,13 +1,22 @@
 package com.example.stimpe.parking;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Process;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +31,9 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
     MapView gMapView;
     private View view;
     private GoogleMap mMap = null;
+    private Context context;
+    private PopupWindow permissionPopUp;
+    private LinearLayout mLinearLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,9 +84,17 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
         LatLng west_lot = new LatLng(34.20021,-118.17737);
         LatLng parking_structure = new LatLng(34.19947,-118.16972);
         LatLng visitor_annex = new LatLng(34.19950,-118.17784);
+        context = getActivity();
         mMap.addMarker(new MarkerOptions().position(west_lot).title("West Lot"));
         mMap.addMarker(new MarkerOptions().position(parking_structure).title("Parking Structure"));
         mMap.addMarker(new MarkerOptions().position(visitor_annex).title("Visitor Annex"));
+        if(context.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, Process.myPid(), Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        }
+        else {
+            //dialog box telling user to turn on permission for app
+            //map_permission_popup.xml
+        }
 
         //zoom to jpl map
         mMap.setMinZoomPreference(15);
