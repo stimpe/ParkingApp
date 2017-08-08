@@ -72,6 +72,7 @@ public class predictionPage extends Fragment {
     private RadioButton radioButton;
     private BarChart chart;
     private CheckBox checkBox;
+    private JSONArray jsonArray;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -281,62 +282,89 @@ public class predictionPage extends Fragment {
     //variables must be final to be accessed in inner class
     //this function makes https call and gets json predict data based on given lot & day
     private void getPredictHTTPS(final int lot, final String day) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    InputStream responseBody;
-                    BufferedReader responseBodyReader;
-                    JSONArray jsonArray;
-                    String temp;
-                    StringBuilder jsonBuild = new StringBuilder();
-                    String jsonString;
-                    int day_id;
-                    URL API = new URL("https://jparking.jpl.nasa.gov/api/v1/predict.json/?lot=" + String.valueOf(lot));
-                    HttpsURLConnection test_connect = (HttpsURLConnection) API.openConnection();
-                    test_connect.setRequestProperty("Content-Type", "application/json");
-                    test_connect.setRequestProperty("Accept", "application/json");  //ensure only JSON is accepted
-                    test_connect.setRequestMethod("GET");
-                    if (test_connect.getResponseCode() == 200) {
-                        Log.d("predict", "Success");   //check android monitor logcat for debug log statement
-                        responseBody = test_connect.getInputStream();
-                        responseBodyReader = new BufferedReader(new InputStreamReader(responseBody, "UTF-8"));
-                        while ((temp = responseBodyReader.readLine()) != null) {
-                            jsonBuild.append(temp); //create string of JSON array
+        int day_id;
+
+        if (jsonArray == null) {
+            Log.d("predict", "beginning https data request");
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        InputStream responseBody;
+                        BufferedReader responseBodyReader;
+                        //JSONArray jsonArray;
+                        String temp;
+                        StringBuilder jsonBuild = new StringBuilder();
+                        String jsonString;
+                        int day_id;
+                        URL API = new URL("https://jparking.jpl.nasa.gov/api/v1/predict.json/?lot=" + String.valueOf(lot));
+                        HttpsURLConnection test_connect = (HttpsURLConnection) API.openConnection();
+                        test_connect.setRequestProperty("Content-Type", "application/json");
+                        test_connect.setRequestProperty("Accept", "application/json");  //ensure only JSON is accepted
+                        test_connect.setRequestMethod("GET");
+                        if (test_connect.getResponseCode() == 200) {
+                            Log.d("predict", "Success");   //check android monitor logcat for debug log statement
+                            responseBody = test_connect.getInputStream();
+                            responseBodyReader = new BufferedReader(new InputStreamReader(responseBody, "UTF-8"));
+                            while ((temp = responseBodyReader.readLine()) != null) {
+                                jsonBuild.append(temp); //create string of JSON array
+                            }
+                            jsonString = jsonBuild.toString();
+                            jsonArray = new JSONArray(jsonString);  //Create JSON array from string
+                            switch (day) {
+                                case "Mon":
+                                    day_id = 2;
+                                    break;
+                                case "Tues":
+                                    day_id = 3;
+                                    break;
+                                case "Wed":
+                                    day_id = 4;
+                                    break;
+                                case "Thurs":
+                                    day_id = 5;
+                                    break;
+                                case "Fri":
+                                    day_id = 6;
+                                    break;
+                                default:
+                                    day_id = 2;
+                            }
+                            predictDataHandler(jsonArray, day_id);
+                            test_connect.disconnect();
+                        } else {
+                            Log.d("predict", String.valueOf(test_connect.getResponseCode()));
+                            test_connect.disconnect();
                         }
-                        jsonString = jsonBuild.toString();
-                        jsonArray = new JSONArray(jsonString);  //Create JSON array from string
-                        switch (day) {
-                            case "Mon":
-                                day_id = 2;
-                                break;
-                            case "Tues":
-                                day_id = 3;
-                                break;
-                            case "Wed":
-                                day_id = 4;
-                                break;
-                            case "Thurs":
-                                day_id = 5;
-                                break;
-                            case "Fri":
-                                day_id = 6;
-                                break;
-                            default:
-                                day_id = 2;
-                        }
-                        predictDataHandler(jsonArray, day_id);
-                        test_connect.disconnect();
-                    } else {
-                        Log.d("predict", String.valueOf(test_connect.getResponseCode()));
-                        test_connect.disconnect();
+                    } catch (Exception e) {
+                        Log.d("Error", e.getMessage());
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    Log.d("Error", e.getMessage());
-                    e.printStackTrace();
                 }
+            });
+        }else {
+            Log.d("predict", "data already stored, continuing with previous data");
+            switch (day) {
+                case "Mon":
+                    day_id = 2;
+                    break;
+                case "Tues":
+                    day_id = 3;
+                    break;
+                case "Wed":
+                    day_id = 4;
+                    break;
+                case "Thurs":
+                    day_id = 5;
+                    break;
+                case "Fri":
+                    day_id = 6;
+                    break;
+                default:
+                    day_id = 2;
             }
-        });
+            predictDataHandler(jsonArray,day_id);
+        }
     }
 
     //this function takes the data and forms it for use with the charts
@@ -397,8 +425,6 @@ public class predictionPage extends Fragment {
             e.printStackTrace();
         }
         for (int i = 0;i < dataPoints.size();i++) {
-            Log.d("key", String.valueOf(dataPoints.keyAt(i)));
-            Log.d("value", String.valueOf(dataPoints.valueAt(i)));
             entries.add(new BarEntry(dataPoints.keyAt(i), dataPoints.valueAt(i)));
         }
         barDataSet = new BarDataSet(entries, "Parking Available Over Time");

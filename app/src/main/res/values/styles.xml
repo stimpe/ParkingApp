@@ -13,4 +13,8 @@
         <item name="android:windowExitAnimation">@anim/popup_out</item>
     </style>
 
+    <style name="SplashScreen" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
 </resources>

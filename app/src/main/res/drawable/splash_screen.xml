@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/DarkJpl"/>
+    <!-- TODO: update splash screen -->
+    <!-- new items in here for splash screen (make sure gravity is center) -->
+</layer-list>
