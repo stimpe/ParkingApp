@@ -34,6 +34,7 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
     private Context context;
     private PopupWindow permissionPopUp;
     private LinearLayout mLinearLayout;
+    private String received_lot;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +61,13 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    //for interaction with buttons on StructureListFragment
+    public void getParkingArea(String parking_area) {
+        received_lot = parking_area;
+        Log.d("parking lot", received_lot);
+        //do stuff with parking area
+        //set zoom to parking lot here
+    }
 
     /**
      * Manipulates the map once available.
@@ -155,8 +163,8 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
             gMapView.onSaveInstanceState(outState);
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+//    public interface OnFragmentInteractionListener {
+//        // TODO: Update argument type and name
+//        void onFragmentInteraction(Uri uri);
+//    }
 }

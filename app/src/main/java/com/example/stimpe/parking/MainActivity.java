@@ -10,9 +10,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.*;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,7 +23,7 @@ import android.widget.ListView;
 
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements predictionPage.OnFragmentInteractionListener, socialMap.OnFragmentInteractionListener, StructureListFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements StructureListFragment.OnFragmentInteractionListener, predictionPage.OnFragmentInteractionListener{
     public static final int PAGE_COUNT = 3;
     ViewPager viewPager;
 
@@ -33,15 +36,7 @@ public class MainActivity extends AppCompatActivity implements predictionPage.On
         viewPager.setAdapter(new customPagerAdapter(getSupportFragmentManager()));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager, true);
-        /*
-        FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-        if (fragment == null) {
-            fragment = new StructureListFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment)
-                    .commit();
-        }*/
+
     }
 
     //custom adapter for the viewpager to use
@@ -91,7 +86,24 @@ public class MainActivity extends AppCompatActivity implements predictionPage.On
     }
 
     @Override
+    public void sendDataToMap(String selected_parking) {
+        socialMap map_destination;
+        Log.d("interface", "trying to communicate");
+        map_destination = (socialMap) getSupportFragmentManager().findFragmentById(R.id.map);
+        if (map_destination != null) {
+            Log.d("interface", "fragment already instantiated, communicating...");
+            map_destination.getParkingArea(selected_parking);
+            viewPager.setCurrentItem(2, true);
+        }else {
+            Log.d("interface", "fragment not instantiated, instatiating...");
+            map_destination = (socialMap) viewPager.getAdapter().instantiateItem(viewPager, 2);
+            map_destination.getParkingArea(selected_parking);
+            viewPager.setCurrentItem(2, true);
+        }
+    }
+
+    @Override
     public void onFragmentInteraction(Uri uri) {
-        //TODO: any contents needed here?
+        //use for prediction page
     }
 }

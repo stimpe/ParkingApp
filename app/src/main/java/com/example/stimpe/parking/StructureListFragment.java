@@ -49,6 +49,7 @@ public class StructureListFragment extends Fragment {
     private Button button;
     private Context context;
     private LinearLayout mLinearLayout;
+    private OnFragmentInteractionListener mInteractionListener;
 
     @Nullable
     @Override
@@ -83,8 +84,39 @@ public class StructureListFragment extends Fragment {
     }
     private void assignVariables(View view) {
         mParkingLot1Value = (Button) view.findViewById(R.id.lot1);
+        mParkingLot1Value.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("button1", "pressed");
+                if (mInteractionListener != null) {
+                    mInteractionListener.sendDataToMap("West Lot");
+                }
+            }
+        });
         mParkingLot2Value = (Button) view.findViewById(R.id.lot2);
+        mParkingLot2Value.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("button2", "pressed");
+                if (mInteractionListener != null) {
+                    mInteractionListener.sendDataToMap("Parking Structure");
+                }
+            }
+        });
         mParkingLot3Value = (Button) view.findViewById(R.id.lot3);
+        mParkingLot3Value.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("button3", "pressed");
+                if (mInteractionListener != null) {
+                    mInteractionListener.sendDataToMap("Visitor Annex");
+                }
+            }
+        });
+    }
+
+    private void sendMessageToMap(String target_lot) {
+
     }
 
     //Addition by: Cristopher Hernandez
@@ -199,9 +231,25 @@ public class StructureListFragment extends Fragment {
         super.onResume();
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mInteractionListener = (OnFragmentInteractionListener) context;
+        }catch(ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mInteractionListener = null;
+    }
+
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        public void sendDataToMap(String selected_parking);
     }
 }
