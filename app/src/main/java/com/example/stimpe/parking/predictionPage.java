@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.SparseArray;
@@ -44,9 +43,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -66,8 +63,6 @@ public class predictionPage extends Fragment {
     private Spinner spinner;
     // TODO: Rename parameter arguments if neccessary
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private BarChart chart;
@@ -75,8 +70,8 @@ public class predictionPage extends Fragment {
     private JSONArray jsonArray;
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    //private String mParam1;
+    //private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -102,20 +97,20 @@ public class predictionPage extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static predictionPage newInstance(String param1, String param2) {
         predictionPage fragment = new predictionPage();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        //Bundle args = new Bundle();
+        //args.putString(ARG_PARAM1, param1);
+        //args.putString(ARG_PARAM2, param2);
+        //fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        //if (getArguments() != null) {
+        //    mParam1 = getArguments().getString(ARG_PARAM1);
+        //    mParam2 = getArguments().getString(ARG_PARAM2);
+        //}
     }
 
     @Override
@@ -292,7 +287,6 @@ public class predictionPage extends Fragment {
                     try {
                         InputStream responseBody;
                         BufferedReader responseBodyReader;
-                        //JSONArray jsonArray;
                         String temp;
                         StringBuilder jsonBuild = new StringBuilder();
                         String jsonString;
@@ -488,6 +482,7 @@ public class predictionPage extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        context = null;
     }
 
     /**

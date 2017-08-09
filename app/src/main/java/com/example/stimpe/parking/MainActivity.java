@@ -23,8 +23,10 @@ import android.widget.ListView;
 
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements StructureListFragment.OnFragmentInteractionListener, predictionPage.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements StructureListFragment.OnFragmentInteractionListener, predictionPage.OnFragmentInteractionListener
+                                                                , socialMap.OnMapFragmentInteractionListener{
     public static final int PAGE_COUNT = 3;
+    public String received_lot = null;
     ViewPager viewPager;
 
     @Override
@@ -89,15 +91,17 @@ public class MainActivity extends AppCompatActivity implements StructureListFrag
     public void sendDataToMap(String selected_parking) {
         socialMap map_destination;
         Log.d("interface", "trying to communicate");
-        map_destination = (socialMap) getSupportFragmentManager().findFragmentById(R.id.map);
+        map_destination = (socialMap) getSupportFragmentManager().findFragmentByTag(
+                "android:switcher:" + R.id.viewPager + ":" + 2
+        );
         if (map_destination != null) {
             Log.d("interface", "fragment already instantiated, communicating...");
-            map_destination.getParkingArea(selected_parking);
+            received_lot = selected_parking;
             viewPager.setCurrentItem(2, true);
         }else {
             Log.d("interface", "fragment not instantiated, instatiating...");
             map_destination = (socialMap) viewPager.getAdapter().instantiateItem(viewPager, 2);
-            map_destination.getParkingArea(selected_parking);
+            received_lot = selected_parking;
             viewPager.setCurrentItem(2, true);
         }
     }
@@ -105,5 +109,10 @@ public class MainActivity extends AppCompatActivity implements StructureListFrag
     @Override
     public void onFragmentInteraction(Uri uri) {
         //use for prediction page
+    }
+
+    @Override
+    public String getParkingAreaZoom() {
+        return received_lot;
     }
 }

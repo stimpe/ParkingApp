@@ -21,8 +21,10 @@ import android.widget.PopupWindow;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,7 +36,8 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
     private Context context;
     private PopupWindow permissionPopUp;
     private LinearLayout mLinearLayout;
-    private String received_lot;
+    private String received_lot = null;
+    private OnMapFragmentInteractionListener mListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,14 +62,6 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
 
         //gMapView.onCreate(getArguments());
         return view;
-    }
-
-    //for interaction with buttons on StructureListFragment
-    public void getParkingArea(String parking_area) {
-        received_lot = parking_area;
-        Log.d("parking lot", received_lot);
-        //do stuff with parking area
-        //set zoom to parking lot here
     }
 
     /**
@@ -110,19 +105,50 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
         mMap.setLatLngBoundsForCameraTarget(jpl_bounds);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(jpl_map_start));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(16));
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        moveCameraToSelection();
     }
     @Override
     public void onResume() {
         super.onResume();
-
+        if (mMap != null) {
+            moveCameraToSelection();
+        }
         if (gMapView != null)
             gMapView.onResume();
     }
 
+    public void moveCameraToSelection () {
+        received_lot = mListener.getParkingAreaZoom();
+        if (received_lot != null) {
+            switch (received_lot.toLowerCase()) {
+                case "west lot":
+                    LatLng west = new LatLng(34.20021, -118.174);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(west));
+//                    mMap.moveCamera(CameraUpdateFactory.zoomTo(20));
+                    Log.d("map", "move to west lot");
+                    break;
+                case "parking structure":
+                    LatLng pStruct = new LatLng(34.19947, -118.16972);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(pStruct));
+//                    mMap.moveCamera(CameraUpdateFactory.zoomTo(20));
+                    Log.d("map", "move to parking structure");
+                    break;
+                case "visitor annex":
+                    LatLng annex = new LatLng(34.19950, -118.17784);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(annex));
+//                    mMap.moveCamera(CameraUpdateFactory.zoomTo(20));
+                    Log.d("map", "move to visitor annex");
+                    break;
+            }
+        }
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        context = null;
 
         if (gMapView != null)
             gMapView.onDestroy();
@@ -137,6 +163,23 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
         fragTrans.remove(frag);
         fragTrans.commit();
     }*/
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (OnMapFragmentInteractionListener) context;
+        }catch(ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnMapFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+        context = null;
+    }
 
     @Override
     public void onStart() {
@@ -163,8 +206,8 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
             gMapView.onSaveInstanceState(outState);
     }
 
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
+    public interface OnMapFragmentInteractionListener {
+        // TODO: Update argument type and name
+        String getParkingAreaZoom();
+    }
 }

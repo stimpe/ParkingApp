@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,8 +26,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -79,7 +76,6 @@ public class StructureListFragment extends Fragment {
             }
         });
 
-
         return view;
     }
     private void assignVariables(View view) {
@@ -115,10 +111,6 @@ public class StructureListFragment extends Fragment {
         });
     }
 
-    private void sendMessageToMap(String target_lot) {
-
-    }
-
     //Addition by: Cristopher Hernandez
     //Date: 7/29/2017
     //Testing https connection
@@ -150,6 +142,8 @@ public class StructureListFragment extends Fragment {
                         jsonString = jsonBuild.toString();
                         jsonArray = new JSONArray(jsonString);  //Create JSON array from string
                         setParkingValues(jsonArray);
+                        jsonArray = null;
+                        jsonString = null;
                         test_connect.disconnect();
                     } else {
                         Log.d("now_data", String.valueOf(test_connect.getResponseCode()));
@@ -196,6 +190,7 @@ public class StructureListFragment extends Fragment {
                 }
             }
         });
+        activity = null;
     }
 
     //onPause eliminate timerTask to prevent running in background
@@ -245,6 +240,11 @@ public class StructureListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mInteractionListener = null;
+        context = null;
+        mLinearLayout = null;
+        timer.cancel();
+        timer.purge();
+        timer = null;
     }
 
 

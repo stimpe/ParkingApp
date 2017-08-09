@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">JPL Park</string>
+    <string name="app_name">Space Scout</string>
     <string name="parking_lot_1_text">West Lot \n %d</string>
     <string name="parking_lot_2_text">Parking Structure \n %d</string>
     <string name="parking_lot_3_text">Visitor Annex \n %d</string>
@@ -10,6 +10,8 @@
     <string name="wednesday">Wed</string>
     <string name="thursday">Thurs</string>
     <string name="friday">Fri</string>
+    <string name="help_listPage">The number of spots available is estimated. \n Select a lot to view on the map.</string>
+    <string name="help_predict">Select a lot from the dropdown menu to view predictions for parking on each day of the week.</string>
     <string name="homeScreen">Spots Available</string>
     <string name="about_screen">About</string>
     <string name="title_activity_social_map">Map</string>
