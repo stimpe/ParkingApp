@@ -123,21 +123,21 @@ public class socialMap extends Fragment implements OnMapReadyCallback {
         if (received_lot != null) {
             switch (received_lot.toLowerCase()) {
                 case "west lot":
-                    LatLng west = new LatLng(34.20021, -118.174);
+                    LatLng west = new LatLng(34.20021,-118.17737);
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(west));
-//                    mMap.moveCamera(CameraUpdateFactory.zoomTo(20));
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(17));
                     Log.d("map", "move to west lot");
                     break;
                 case "parking structure":
                     LatLng pStruct = new LatLng(34.19947, -118.16972);
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(pStruct));
-//                    mMap.moveCamera(CameraUpdateFactory.zoomTo(20));
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(17));
                     Log.d("map", "move to parking structure");
                     break;
                 case "visitor annex":
                     LatLng annex = new LatLng(34.19950, -118.17784);
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(annex));
-//                    mMap.moveCamera(CameraUpdateFactory.zoomTo(20));
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(17));
                     Log.d("map", "move to visitor annex");
                     break;
             }
